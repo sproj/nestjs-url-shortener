@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: url-shortener-config
+  namespace: url-shortener
+data:
+  SERVICE_HOST: "0.0.0.0"
+  SERVICE_PORT: "8080"
+  MAX_RETRIES: "5"
+  POSTGRES_HOST: "postgres-service.databases.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "url_shortener"
+  POSTGRES_CONNECTION_POOL: "5"
+  REDIS_HOST: "redis-service.databases.svc.cluster.local"
+  REDIS_PORT: "6379"
+  RABBITMQ_HOST: "rabbitmq-service.rabbitmq.svc.cluster.local"
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_EXCHANGE: "url-shortener"
+  REDIRECT_EVENT_ROUTING_KEY: "redirect_events"
