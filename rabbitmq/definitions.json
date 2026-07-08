@@ -1,0 +1,76 @@
+{
+  "users": [
+    {
+      "name": "admin",
+      "password": "password",
+      "tags": ["administrator"]
+    }
+  ],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "vhosts": [{ "name": "/" }],
+  "exchanges": [
+    {
+      "name": "url-shortener",
+      "vhost": "/",
+      "type": "direct",
+      "durable": false,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "url-shortener-dlx",
+      "vhost": "/",
+      "type": "direct",
+      "durable": false,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "analytics_redirect_events_dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "analytics_redirect_events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "url-shortener-dlx",
+        "x-dead-letter-routing-key": "analytics_redirect_events_dlq"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "source": "url-shortener",
+      "vhost": "/",
+      "destination": "analytics_redirect_events",
+      "destination_type": "queue",
+      "routing_key": "redirect_events",
+      "arguments": {}
+    },
+    {
+      "source": "url-shortener-dlx",
+      "vhost": "/",
+      "destination": "analytics_redirect_events_dlq",
+      "destination_type": "queue",
+      "routing_key": "analytics_redirect_events_dlq",
+      "arguments": {}
+    }
+  ]
+}
