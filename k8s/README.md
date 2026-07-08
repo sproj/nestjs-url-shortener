@@ -67,3 +67,12 @@ curl http://$(minikube ip):30080/health
 - `imagePullPolicy: Never` is set on the app container. The image must be built inside minikube's daemon (step 1 above) — pulling from a registry will not work with this setting.
 - `secret.yaml` contains hardcoded dev credentials and is committed for convenience. Replace with ExternalSecrets or sealed-secrets before deploying anywhere real.
 - `service-monitor.yaml` requires the `monitoring.coreos.com/v1` CRD (installed by kube-prometheus-stack). Apply it separately if the CRD isn't present: `kubectl apply -f k8s/ --ignore-not-found` won't help here — just skip that file if Prometheus isn't installed.
+The deploy sequence is:
+
+eval $(minikube docker-env)          # point docker at minikube's daemon
+docker build -t nestjs-url-shortener:latest .
+kubectl apply -f k8s/
+kubectl rollout status deployment/url-shortener -n url-shortener
+minikube service url-shortener-service -n url-shortener
+
+One thing to be aware of: if kube-prometheus-stack isn't installed in your minikube, applying service-monitor.yaml will fail because the ServiceMonitor CRD won't exist. You can skip it with kubectl apply -f k8s/namespace.yaml -f k8s/app-config.yaml -f k8s/secret.yaml -f k8s/app-deployment.yaml -f k8s/app-service.yaml in that case.
