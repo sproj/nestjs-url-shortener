@@ -56,6 +56,8 @@ const handlers = [ShortenUrlHandler, ResolveShortCodeHandler];
         const logger = new Logger('AmqpSetup');
         const host = config.get<string>('RABBITMQ_HOST');
         const port = config.get('RABBITMQ_PORT', '5672');
+        const user = config.get('RABBITMQ_USER', 'admin');
+        const password = config.get('RABBITMQ_PASSWORD', 'password');
         const exchange = config.get('RABBITMQ_EXCHANGE', '');
         const routingKey = config.get('REDIRECT_EVENT_ROUTING_KEY', 'redirect_events');
 
@@ -64,7 +66,7 @@ const handlers = [ShortenUrlHandler, ResolveShortCodeHandler];
           return { publish: async () => {} };
         }
 
-        const connection = amqp.connect([`amqp://${host}:${port}`]);
+        const connection = amqp.connect([`amqp://${user}:${password}@${host}:${port}`]);
         connection.on('connect', () => logger.log('RabbitMQ connected'));
         connection.on('disconnect', ({ err }) =>
           logger.warn(`RabbitMQ disconnected: ${err?.message}`),

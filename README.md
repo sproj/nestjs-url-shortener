@@ -26,7 +26,7 @@ docker compose up --build
 The app is available at `http://localhost:8080`.
 
 Infra UIs:
-- RabbitMQ management: `http://localhost:15672` (guest / guest)
+- RabbitMQ management: `http://localhost:15672` (admin / password)
 - RedisInsight: `http://localhost:5540`
 
 ### Running locally against Docker infra
@@ -182,6 +182,8 @@ Env var names match the Rust service's Kubernetes ConfigMap so the same manifest
 | `REDIS_PORT` | `6379` | |
 | `RABBITMQ_HOST` | — | optional — omit to disable analytics |
 | `RABBITMQ_PORT` | `5672` | |
+| `RABBITMQ_USER` | `admin` | |
+| `RABBITMQ_PASSWORD` | `password` | |
 | `RABBITMQ_EXCHANGE` | `""` | |
 | `REDIRECT_EVENT_ROUTING_KEY` | `redirect_events` | |
 | `MAX_RETRIES` | `5` | max code generation attempts before 500 |
